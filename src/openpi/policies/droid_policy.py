@@ -41,18 +41,25 @@ class DroidInputs(transforms.DataTransformFn):
 
         # Possibly need to parse images to uint8 (H,W,C) since LeRobot automatically
         # stores as float32 (C,H,W), gets skipped for policy inference
-        base_image = _parse_image(data["observation/exterior_image_1_left"])
+        # base_image = _parse_image(data["observation/exterior_image_1_left"])
+        base_image1 = _parse_image(data["observation/exterior_image_1_left"])
+        base_image2 = _parse_image(data["observation/exterior_image_2_left"])
+
         wrist_image = _parse_image(data["observation/wrist_image_left"])
 
         match self.model_type:
             case _model.ModelType.PI0 | _model.ModelType.PI05:
-                names = ("base_0_rgb", "left_wrist_0_rgb", "right_wrist_0_rgb")
-                images = (base_image, wrist_image, np.zeros_like(base_image))
-                image_masks = (np.True_, np.True_, np.False_)
+                # names = ("base_0_rgb", "left_wrist_0_rgb", "right_wrist_0_rgb")
+                # images = (base_image, wrist_image, np.zeros_like(base_image))
+                # image_masks = (np.True_, np.True_, np.False_)
+                names = ("base_1_rgb", "base_2_rgb", "wrist_rgb")
+                images = (base_image1, base_image2, wrist_image)
+                image_masks = (np.True_, np.True_, np.True_)
             case _model.ModelType.PI0_FAST:
                 names = ("base_0_rgb", "base_1_rgb", "wrist_0_rgb")
                 # We don't mask out padding images for FAST models.
-                images = (base_image, np.zeros_like(base_image), wrist_image)
+                # images = (base_image, np.zeros_like(base_image), wrist_image)
+                images = (base_image1, np.zeros_like(base_image1), wrist_image)
                 image_masks = (np.True_, np.True_, np.True_)
             case _:
                 raise ValueError(f"Unsupported model type: {self.model_type}")
@@ -70,6 +77,9 @@ class DroidInputs(transforms.DataTransformFn):
             if isinstance(data["prompt"], bytes):
                 data["prompt"] = data["prompt"].decode("utf-8")
             inputs["prompt"] = data["prompt"]
+
+        if "episode_id" in data:
+            inputs["episode_id"] = data["episode_id"]
 
         return inputs
 
