@@ -12,12 +12,9 @@ from typing import Callable, List, Sequence, Tuple, Union
 import numpy as np
 import torch
 import torch.nn as nn
-import torch.utils.checkpoint
 from einops import rearrange
 
-from depth_anything_3.utils.logger import logger
-
-from .layers import LayerScale  # noqa: F401
+from .logger import logger
 from .layers import Mlp  # noqa: F401
 from .layers import (  # noqa: F401
     Block,
@@ -27,8 +24,7 @@ from .layers import (  # noqa: F401
     SwiGLUFFNFused,
 )
 
-# logger = logging.getLogger("dinov2")
-
+# logger = logging.getLogger("dinov2") 
 
 def get_1d_sincos_pos_embed_from_grid(embed_dim, pos):
     """
@@ -278,7 +274,7 @@ class DinoVisionTransformer(nn.Module):
         pos_nodiff = None
         if self.rope is not None:
             pos = self.position_getter(
-                B * S, H // self.patch_size, W // self.patch_size, device=device
+                B * S, H // self.patch_size, W // self.patch_size, device=device 
             )
             pos = rearrange(pos, "(b s) n c -> b s n c", b=B)
             pos_nodiff = torch.zeros_like(pos).to(pos.dtype)

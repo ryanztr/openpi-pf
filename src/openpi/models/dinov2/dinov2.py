@@ -9,9 +9,10 @@
 
 
 from typing import List
+
 import torch.nn as nn
 
-from depth_anything_3.model.dinov2.vision_transformer import (
+from .vision_transformer import (
     vit_base,
     vit_giant2,
     vit_large,
@@ -56,9 +57,12 @@ class DinoV2(nn.Module):
             cat_token=cat_token,
         )
 
-    def forward(self, x, **kwargs):
+    def forward(self, x, n=None, **kwargs):
+        # Use n from kwargs if provided, otherwise use self.out_layers
+        if n is None:
+            n = self.out_layers
         return self.pretrained.get_intermediate_layers(
             x,
-            self.out_layers,
+            n=n,
             **kwargs,
         )
