@@ -920,7 +920,7 @@ _CONFIGS = [
             discrete_state_input=False,
         ),
         data=LeRobotDROIDDataConfig(
-            repo_id="droid_dataset_from_tfrecord_lerobot",  # 使用正确的数据集名称
+            repo_id="droid_dataset_from_tfrecord_lerobot", 
             base_config=DataConfig(prompt_from_task=True),
             assets=AssetsConfig(
                 assets_dir="gs://openpi-assets/checkpoints/pi05_droid/assets",
